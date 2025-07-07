@@ -1,0 +1,63 @@
+.include TSMC_180nm.txt
+.param SUPPLY=1.8V
+.param LAMBDA=0.09u
+.param length={2*LAMBDA}
+.param width={6*LAMBDA}
+.global gnd vdd
+
+Vdd vdd gnd 'SUPPLY'
+
+vx1 x1 gnd pulse 1.8 0 0ns 10ps 10ps 10ns 20ns
+vy1 y1 gnd pulse 1.8 0 0ns 10ps 10ps 20ns 40ns
+
+.subckt nand_gate OUT A B width vdd gnd
+  M1 OUT A vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 OUT B vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M3 OUT A I gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M4 I B gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends nand_gate
+
+.subckt nor_gate OUT A B width vdd gnd
+  M1 I A vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M2 OUT B I vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M3 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+  M4 OUT B gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends nor_gate
+
+.subckt not_gate OUT A width vdd gnd
+  M1 OUT A vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends not_gate
+
+
+.subckt xor_gate OUT A B width vdd gnd
+   
+  x1 A_inverted A width vdd gnd not_gate
+  x2 B_inverted B width vdd gnd not_gate
+ 
+  M1 l1 A vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M2 OUT B_inverted l1 vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M3 l2 A_inverted vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M4 OUT B l2 vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M5 OUT A l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l3 B gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 OUT A_inverted l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 l4 B_inverted gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends xor_gate
+
+.subckt p_g p g k x y width vdd gnd  
+  x1 p x y width vdd gnd nor_gate
+  x2 g x y width vdd gnd nand_gate
+  x3 k x y width vdd gnd xor_gate
+.ends p_g
+
+x1 p1 g1 k1 x1 y1 width vdd gnd p_g
+
+.tran 1n 30n
+.control
+set color0=black
+set color1=white 
+run
+set curplottitle="Pragnya-2023102067"
+plot v(k1) v(g1)+2 v(p1)+4 v(y1)+6 v(x1)+8
+.endc

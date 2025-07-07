@@ -1,0 +1,86 @@
+*Pragnya_2023102067
+.include TSMC_180nm.txt
+
+.param SUPPLY=1.8V
+.param LAMBDA=0.09u
+.param length={2*LAMBDA}
+.param w={6*LAMBDA}
+.global gnd vdd
+
+Vdd vdd gnd 'SUPPLY'
+
+vd d gnd pulse 1.8 0 0ns 10ps 10ps 20ns 40ns
+vclk clk gnd pulse 1.8 0 0ns 10ps 10ps 10ns 20ns
+
+.option scale=0.09u
+
+M1000 clk clk vdd inv_0/w_0_6# CMOSP w=12 l=2
++  ad=60 pd=34 as=271 ps=149
+M1001 clk clk gnd Gnd CMOSN w=6 l=2
++  ad=30 pd=22 as=211 ps=125
+M1002 a_13_1# q gnd Gnd CMOSN w=12 l=2
++  ad=72 pd=36 as=0 ps=0
+M1003 a_n69_35# a_n63_n2# a_n69_1# Gnd CMOSN w=12 l=2
++  ad=84 pd=38 as=72 ps=36
+M1004 a_47_1# a_13_35# gnd Gnd CMOSN w=12 l=2
++  ad=72 pd=36 as=0 ps=0
+M1005 q a_n31_17# a_n35_1# Gnd CMOSN w=12 l=2
++  ad=168 pd=76 as=72 ps=36
+M1006 a_n69_35# q vdd w_n82_29# CMOSP w=14 l=2
++  ad=210 pd=58 as=0 ps=0
+M1007 q a_n69_35# vdd w_n82_29# CMOSP w=14 l=2
++  ad=420 pd=116 as=0 ps=0
+M1008 a_n69_1# q gnd Gnd CMOSN w=12 l=2
++  ad=0 pd=0 as=0 ps=0
+M1009 q a_13_35# vdd w_0_29# CMOSP w=14 l=2
++  ad=0 pd=0 as=0 ps=0
+M1010 q a_51_17# a_47_1# Gnd CMOSN w=12 l=2
++  ad=0 pd=0 as=0 ps=0
+M1011 a_n35_1# a_n69_35# gnd Gnd CMOSN w=12 l=2
++  ad=0 pd=0 as=0 ps=0
+M1012 a_13_35# q vdd w_0_29# CMOSP w=14 l=2
++  ad=210 pd=58 as=0 ps=0
+M1013 a_13_35# a_19_n2# a_13_1# Gnd CMOSN w=12 l=2
++  ad=84 pd=38 as=0 ps=0
+C0 w_0_29# a_13_35# 3.47fF
+C1 a_13_35# a_51_17# 0.58fF
+C2 clk a_n69_35# 0.74fF
+C3 inv_0/w_0_6# clk 4.55fF
+C4 clk gnd 1.21fF
+C5 a_n69_35# w_n82_29# 3.47fF
+C6 inv_0/w_0_6# vdd 0.85fF
+C7 inv_0/w_0_6# q 0.80fF
+C8 clk a_n69_1# 0.40fF
+C9 clk a_n35_1# 0.40fF
+C10 clk q 1.70fF
+C11 a_n69_35# a_n31_17# 0.58fF
+C12 vdd w_n82_29# 1.69fF
+C13 w_0_29# vdd 1.69fF
+C14 q vdd 0.61fF
+C15 q w_n82_29# 3.47fF
+C16 w_0_29# q 3.47fF
+C17 a_51_17# Gnd 7.16fF
+C18 a_19_n2# Gnd 2.31fF
+C19 a_n31_17# Gnd 7.16fF
+C20 a_n63_n2# Gnd 2.31fF
+C21 q Gnd 27.32fF
+C22 gnd Gnd 11.00fF
+C23 vdd Gnd 8.27fF
+C24 clk Gnd 19.14fF
+
+.tran 100p 100n
+.ic v(q) 0
+
+.measure tran delay
++ TRIG v(clk) VAL='0.5*SUPPLY' RISE=0.4
++ TARG v(q) VAL='0.5*SUPPLY' RISE=0.4
+
+.control
+set color0=black
+set color1=white 
+
+run
+set curplottitle="Pragnya-2023102067"
+
+plot v(clk)+4 v(d) 3*v(q)+2 
+.endc

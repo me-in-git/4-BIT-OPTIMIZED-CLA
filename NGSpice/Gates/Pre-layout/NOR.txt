@@ -1,0 +1,30 @@
+*Pragnya_2023102067
+.include TSMC_180nm.txt
+.param SUPPLY=1.8V
+.param LAMBDA=0.09u
+.param length={2*LAMBDA}
+.param width={6*LAMBDA}
+.global gnd vdd
+
+Vdd vdd gnd 'SUPPLY'
+va A gnd pulse 1.8 0 0ns 10ps 10ps 10ns 20ns
+vb B gnd pulse 1.8 0 0ns 10ps 10ps 20ns 40ns
+
+.subckt nor_gate OUT A B width vdd gnd
+  M1 I A vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M2 OUT B I vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M3 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+  M4 OUT B gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends nor_gate
+
+x1 OUT A B width vdd gnd nor_gate
+.tran 100p 40n
+
+.control
+set color0=white 
+set color1=black 
+
+run
+set curplottitle="Pragnya-2023102067"
+plot v(OUT) v(B)+2 v(A)+4
+.endc

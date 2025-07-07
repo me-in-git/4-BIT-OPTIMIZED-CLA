@@ -1,0 +1,216 @@
+*Pragnya_2023102067
+.include TSMC_180nm.txt
+.param SUPPLY=1.8V
+.param LAMBDA=0.09u
+.param length={2*LAMBDA}
+.param width={6*LAMBDA}
+.global gnd vdd
+
+Vdd vdd gnd 'SUPPLY'
+
+vclk clk gnd pulse 0 1.8 0ns 10ps 10ps 10ns 20ns
+
+vy1 y1in gnd 1.8
+vy2 y2in gnd 1.8
+vy3 y3in gnd 1.8
+vy4 y4in gnd 1.8
+vx1 x1in gnd 0
+vx2 x2in gnd 0
+vx3 x3in gnd 0
+vx4 x4in gnd 0
+vcin cinin gnd 0
+
+.subckt not_gate OUT A width vdd gnd
+  M1 OUT A vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends not_gate
+
+x0001 clknot clk width Vdd gnd not_gate
+
+.subckt nor_gate OUT A B width vdd gnd
+  M1 I A vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M2 OUT B I vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M3 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+  M4 OUT B gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends nor_gate
+
+.subckt nand_gate OUT A B width vdd gnd
+  M1 OUT A vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 OUT B vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M3 OUT A I gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M4 I B gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends nand_gate
+
+.subckt xor_gate OUT A B width vdd gnd   
+  x1 A_inverted A width vdd gnd not_gate
+  x2 B_inverted B width vdd gnd not_gate
+ 
+  M1 l1 A vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M2 OUT B_inverted l1 vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M3 l2 A_inverted vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M4 OUT B l2 vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M5 OUT A l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l3 B gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 OUT A_inverted l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 l4 B_inverted gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends xor_gate
+
+.subckt p_g p g k x y width vdd gnd  
+  x1 p x y width vdd gnd nor_gate
+  x2 g x y width vdd gnd nand_gate
+  x3 k x y width vdd gnd xor_gate
+.ends p_g
+
+.subckt pos_edge q qnot d clk clknot width vdd gnd  
+  M1 q1 d vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 q1 clknot l gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width} 
+  M3 l d gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M4 q2 q1 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M5 q2 clknot l2 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l2 q1 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 q3 q2 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 q3 clk l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M9 l3 q2 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M10 q q3 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M11 q clk l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M12 l4 q3 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends pos_edge
+
+.subckt neg_edge q qnot d clk clknot width vdd gnd  
+  M1 q1 d vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 q1 clk l1 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M3 l1 d gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M4 q2 q1 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M5 q2 clk l2 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l2 q1 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 q3 q2 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 q3 clknot l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M9 l3 q2 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M10 q q3 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M11 q clknot l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M12 l4 q3 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends neg_edge
+
+x101 x1 x1not x1in clk clknot width vdd gnd neg_edge
+x102 x2 x2not x2in clk clknot width vdd gnd neg_edge
+x103 x3 x3not x3in clk clknot width vdd gnd neg_edge
+x104 x4 x4not x4in clk clknot width vdd gnd neg_edge
+x105 y1 y1not y1in clk clknot width vdd gnd neg_edge
+x106 y2 y2not y2in clk clknot width vdd gnd neg_edge
+x107 y3 y3not y3in clk clknot width vdd gnd neg_edge
+x108 y4 y4not y4in clk clknot width vdd gnd neg_edge
+x109 cin cinnot cinin clk clknot width vdd gnd neg_edge
+
+x1 p1 g1 k1 x1 y1 width vdd gnd p_g
+x2 p2 g2 k2 x2 y2 width vdd gnd p_g
+x3 p3 g3 k3 x3 y3 width vdd gnd p_g
+x4 p4 g4 k4 x4 y4 width vdd gnd p_g
+
+x6 o1 cinnot p1 width vdd gnd nor_gate
+x7 o2 o1 width vdd gnd not_gate
+x8 n1 o2 g1 width vdd gnd nand_gate
+
+x9 l2 p1 p2 width vdd gnd nor_gate
+x10 o3 p2 g1 width vdd gnd nor_gate 
+x11 o4 o3 width vdd gnd not_gate
+x12 n2 o4 g2 width vdd gnd nand_gate
+
+x13 l3 p2 p3 width vdd gnd nor_gate
+x14 o5 p3 g2 width vdd gnd nor_gate 
+x15 o6 o5 width vdd gnd not_gate
+x16 n3 o6 g3 width vdd gnd nand_gate
+
+x17 l4 p3 p4 width vdd gnd nor_gate
+x18 o7 p4 g3 width vdd gnd nor_gate 
+x55 o8 o7 width vdd gnd not_gate
+x19 n4 o8 g4 width vdd gnd nand_gate
+
+x20 z1 cin k1 width vdd gnd xor_gate
+x21 z2 n1 k2 width vdd gnd xor_gate
+
+x22 o9 cin l2 width vdd gnd nand_gate
+x23 o10 o9 width vdd gnd not_gate
+x24 c3not o10 n2 width vdd gnd nor_gate
+x25 c3 c3not width vdd gnd not_gate
+x26 z3 c3 k3 width vdd gnd xor_gate
+
+x27 o11 n1 l3 width vdd gnd nand_gate
+x28 o12 o11 width vdd gnd not_gate
+x29 c4not o12 n3 width vdd gnd nor_gate
+x30 c4 c4not width vdd gnd not_gate
+x31 z4 c4 k4 width vdd gnd xor_gate
+
+x32 ponot l2 l4 width vdd gnd nand_gate 
+x33 o13 l4 n2 width vdd gnd nand_gate
+x34 o14 o13 width vdd gnd not_gate
+x35 gonot o14 n4 width vdd gnd nor_gate
+
+x36 po ponot width vdd gnd not_gate
+x37 go gonot width vdd gnd not_gate
+
+x38 o15 cin po width vdd gnd nand_gate
+x39 o16 o15 width vdd gnd not_gate
+x40 coutnot go o16 width vdd gnd nor_gate
+x41 cout coutnot width vdd gnd not_gate
+
+x111 z1o z1not z1 clk clknot width vdd gnd pos_edge
+x112 z2o z2not z2 clk clknot width vdd gnd pos_edge
+x113 z3o z3not z3 clk clknot width vdd gnd pos_edge
+x114 z4o z4not z4 clk clknot width vdd gnd pos_edge
+x115 couto coutnoto cout clk clknot width vdd gnd pos_edge
+
+C1 z1o gnd 40ff
+C2 z2o gnd 40ff
+C3 z3o gnd 40ff
+C4 z4o gnd 40ff
+C5 couto gnd 40ff
+
+* .tran 1n 1400n
+.tran 100p 50n
+
+.ic v(x1) 0 
+.ic v(x2) 0 
+.ic v(x3) 0 
+.ic v(x4) 0 
+.ic v(y1) 0
+.ic v(y2) 0
+.ic v(y3) 0
+.ic v(y4) 0
+.ic v(x1in) 0 
+.ic v(x2in) 0 
+.ic v(x3in) 0 
+.ic v(x4in) 0 
+.ic v(y1in) 0
+.ic v(y2in) 0
+.ic v(y3in) 0
+.ic v(y4in) 0
+.ic v(z1) 0  
+.ic v(z2) 0  
+.ic v(z3) 0  
+.ic v(z4) 0  
+.ic v(z1o) 0 
+.ic v(z2o) 0 
+.ic v(z3o) 0 
+.ic v(z4o) 0 
+.ic v(cin) 0 
+.ic v(cout) 0 
+.ic v(cinin) 0 
+.ic v(couto) 0 
+
+* .measure tran tpdr1
+* +TRIG v(y1in) VAL='0.50*SUPPLY' RISE=1 TARG v(couto) VAL='0.50*SUPPLY' RISE=1
+* .measure tran tpdf1
+* +TRIG v(y1in) VAL='0.50*SUPPLY' FALL=1 TARG v(couto) VAL='0.50*SUPPLY' FALL=1
+* .measure tran tpd1 
+* +param='(tpdr1+tpdf1)/2' goal=0
+
+.control
+set color0=black 
+set color1=white 
+
+run
+set curplottitle="Pragnya_2023102067"
+
+plot v(x1in) v(x2in)+2 v(x3in)+4 v(x4in)+6 v(y1in)+8 v(y2in)+10 v(y3in)+12 v(y4in)+14 v(clk)+16
+plot v(z1o) v(z2o)+2 v(z3o)+4 v(z4o)+6 v(couto)+8 v(clk)+10 v(clk)+12
+.endc

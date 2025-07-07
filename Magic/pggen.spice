@@ -1,0 +1,103 @@
+* SPICE3 file created from pggen.ext - technology: scmos
+
+.option scale=1u
+
+M1000 xor_0/inv_0/op x vdd xor_0/inv_0/w_0_6# pfet w=12 l=2
++  ad=60 pd=34 as=600 ps=310
+M1001 xor_0/inv_0/op x gnd Gnd nfet w=6 l=2
++  ad=30 pd=22 as=241 ps=157
+M1002 xor_0/inv_1/op y vdd xor_0/inv_1/w_0_6# pfet w=12 l=2
++  ad=60 pd=34 as=0 ps=0
+M1003 xor_0/inv_1/op y gnd Gnd nfet w=6 l=2
++  ad=30 pd=22 as=0 ps=0
+M1004 k xor_0/inv_0/op xor_0/a_10_10# xor_0/w_n3_4# pfet w=24 l=2
++  ad=192 pd=64 as=432 ps=180
+M1005 vdd xor_0/a_18_0# xor_0/a_10_10# xor_0/w_n3_4# pfet w=24 l=2
++  ad=0 pd=0 as=0 ps=0
+M1006 gnd xor_0/inv_1/op xor_0/a_38_n43# Gnd nfet w=12 l=2
++  ad=0 pd=0 as=96 ps=40
+M1007 xor_0/a_10_10# xor_0/inv_1/op k xor_0/w_n3_4# pfet w=24 l=2
++  ad=0 pd=0 as=0 ps=0
+M1008 xor_0/a_10_n43# xor_0/a_8_n46# gnd Gnd nfet w=12 l=2
++  ad=96 pd=40 as=0 ps=0
+M1009 xor_0/a_38_n43# xor_0/inv_0/op k Gnd nfet w=12 l=2
++  ad=0 pd=0 as=120 ps=68
+M1010 k xor_0/a_18_n46# xor_0/a_10_n43# Gnd nfet w=12 l=2
++  ad=0 pd=0 as=0 ps=0
+M1011 xor_0/a_10_10# xor_0/a_8_1# vdd xor_0/w_n3_4# pfet w=24 l=2
++  ad=0 pd=0 as=0 ps=0
+M1012 nor_0/a_13_6# y vdd nor_0/w_0_0# pfet w=24 l=2
++  ad=192 pd=64 as=0 ps=0
+M1013 gnd x p Gnd nfet w=6 l=2
++  ad=0 pd=0 as=48 ps=28
+M1014 p x nor_0/a_13_6# nor_0/w_0_0# pfet w=24 l=2
++  ad=120 pd=58 as=0 ps=0
+M1015 p y gnd Gnd nfet w=6 l=2
++  ad=0 pd=0 as=0 ps=0
+M1016 nand_0/a_13_n26# x gnd Gnd nfet w=12 l=2
++  ad=96 pd=40 as=0 ps=0
+M1017 g x vdd nand_0/w_0_0# pfet w=12 l=2
++  ad=96 pd=40 as=0 ps=0
+M1018 vdd y g nand_0/w_0_0# pfet w=12 l=2
++  ad=0 pd=0 as=0 ps=0
+M1019 g y nand_0/a_13_n26# Gnd nfet w=12 l=2
++  ad=60 pd=34 as=0 ps=0
+C0 p x 0.62fF
+C1 xor_0/w_n3_4# k 0.85fF
+C2 xor_0/a_18_n46# xor_0/inv_1/op 0.18fF
+C3 p k 0.61fF
+C4 vdd xor_0/inv_0/w_0_6# 0.85fF
+C5 k nor_0/a_13_6# 0.53fF
+C6 y g 0.18fF
+C7 k vdd 0.61fF
+C8 y xor_0/inv_0/op 0.41fF
+C9 y nand_0/w_0_0# 2.62fF
+C10 nor_0/w_0_0# p 0.85fF
+C11 y xor_0/inv_1/w_0_6# 3.61fF
+C12 xor_0/inv_0/op xor_0/inv_0/w_0_6# 0.85fF
+C13 xor_0/inv_0/op x 0.61fF
+C14 x nand_0/w_0_0# 2.62fF
+C15 nor_0/w_0_0# vdd 0.85fF
+C16 k xor_0/inv_0/op 0.18fF
+C17 xor_0/inv_0/op xor_0/a_8_n46# 0.18fF
+C18 xor_0/w_n3_4# xor_0/inv_1/op 2.62fF
+C19 xor_0/w_n3_4# xor_0/a_18_0# 2.62fF
+C20 xor_0/a_18_n46# xor_0/inv_0/op 0.18fF
+C21 y x 0.36fF
+C22 xor_0/w_n3_4# vdd 1.69fF
+C23 p vdd 0.81fF
+C24 y xor_0/a_8_n46# 0.11fF
+C25 x xor_0/inv_0/w_0_6# 2.62fF
+C26 xor_0/a_18_0# xor_0/a_10_10# 0.18fF
+C27 xor_0/inv_0/op xor_0/inv_1/op 0.18fF
+C28 k x 2.25fF
+C29 xor_0/w_n3_4# xor_0/a_10_10# 4.37fF
+C30 xor_0/inv_1/w_0_6# xor_0/inv_1/op 0.85fF
+C31 xor_0/w_n3_4# xor_0/inv_0/op 2.62fF
+C32 nor_0/w_0_0# y 2.62fF
+C33 p nand_0/w_0_0# 1.52fF
+C34 nand_0/w_0_0# vdd 1.69fF
+C35 nor_0/w_0_0# x 2.62fF
+C36 x gnd 0.47fF
+C37 xor_0/inv_1/w_0_6# vdd 0.85fF
+C38 y xor_0/inv_1/op 0.20fF
+C39 nor_0/w_0_0# k 0.91fF
+C40 g nand_0/w_0_0# 1.97fF
+C41 p y 0.04fF
+C42 k xor_0/inv_1/op 0.36fF
+C43 xor_0/a_8_n46# xor_0/inv_1/op 0.18fF
+C44 xor_0/w_n3_4# xor_0/a_8_1# 2.62fF
+C45 y vdd 0.47fF
+C46 gnd Gnd 21.48fF
+C47 y Gnd 40.98fF
+C48 x Gnd 39.84fF
+C49 g Gnd 4.23fF
+C50 p Gnd 9.62fF
+C51 vdd Gnd 12.83fF
+C52 xor_0/a_18_n46# Gnd 7.54fF
+C53 xor_0/a_8_n46# Gnd 7.78fF
+C54 k Gnd 11.05fF
+C55 xor_0/a_18_0# Gnd 1.11fF
+C56 xor_0/a_8_1# Gnd 0.87fF
+C57 xor_0/inv_1/op Gnd 21.28fF
+C58 xor_0/inv_0/op Gnd 21.14fF

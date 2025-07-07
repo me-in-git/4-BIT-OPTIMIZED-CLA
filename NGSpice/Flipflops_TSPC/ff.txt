@@ -1,0 +1,85 @@
+*Pragnya_2023102067
+.include TSMC_180nm.txt
+.param SUPPLY=1.8V
+.param LAMBDA=0.09u
+.param length={2*LAMBDA}
+.param width={6*LAMBDA}
+.global gnd vdd
+
+Vdd vdd gnd 'SUPPLY'
+
+vd1 d1 gnd pulse 1.8 0 0ns 10ps 10ps 20ns 40ns
+vd2 d2 gnd pulse 1.8 0 0ns 10ps 10ps 20ns 40ns
+vclk clk gnd pulse 0 1.8 0ns 10ps 10ps 10ns 20ns
+
+.subckt not_gate OUT A width vdd gnd
+  M1 OUT A vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends not_gate
+
+.subckt pos_edge q qnot d clk clknot width vdd gnd  
+  M1 q1 d vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 q1 clknot l gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width} 
+  M3 l d gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M4 q2 q1 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M5 q2 clknot l2 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l2 q1 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 q3 q2 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 q3 clk l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M9 l3 q2 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M10 q q3 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M11 q clk l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M12 l4 q3 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends pos_edge
+
+.subckt neg_edge q qnot d clk clknot width vdd gnd  
+  M1 q1 d vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 q1 clk l1 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M3 l1 d gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M4 q2 q1 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M5 q2 clk l2 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l2 q1 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 q3 q2 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 q3 clknot l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M9 l3 q2 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M10 q q3 vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M11 q clknot l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M12 l4 q3 gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends neg_edge
+
+x3 clknot clk width vdd gnd not_gate
+x1 q1 qnot1 d1 clk clknot width vdd gnd pos_edge
+x2 q2 qnot2 d2 clk clknot width vdd gnd neg_edge
+
+C1 q1 gnd 100ff
+C2 q2 gnd 100ff
+
+.tran 100p 200n
+.ic v(q1) 0
+.ic v(q2) 0
+
+.measure pos_delay trig v(clk) val=1.8 rise=1
+.measure pos_delay_val when v(q1) val=0.9 rise=1
+.measure delay_time trig v(clk) val=1.8 rise=1 when v(q1) val=0.9 rise=1
+
+.measure Tsetup trig v(clk) val=1.8 rise=1 when v(d1) val=1.8 rise=1
+
+* Measuring Hold Time (Thold)
+.measure Thold trig v(clk) val=1.8 rise=1 when v(d1) val=1.8 fall=1
+
+* Measuring Clock-to-Q Delay (Tcq)
+.measure Tcq trig v(clk) val=1.8 rise=1 when v(q1) val=0.9 rise=1
+
+.control
+set color0=black 
+set color1=white 
+print delay_time
+print Tsetup Thold Tcq
+
+run
+set curplottitle="Pragnya-2023102067_posedge_ff"
+plot v(clk)+4 v(d1)+2 v(q1) 
+
+set curplottitle="Pragnya-2023102067__negedge_ff"
+plot v(clk)+4 v(d2)+2 v(q2) 
+.endc

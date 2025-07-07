@@ -1,0 +1,44 @@
+*Pragnya_2023102067
+.include TSMC_180nm.txt
+.param SUPPLY=1.8V
+.param LAMBDA=0.09u
+.param length={2*LAMBDA}
+.param width={6*LAMBDA}
+.global gnd vdd
+
+Vdd vdd gnd 'SUPPLY'
+va A gnd pulse 1.8 0 0ns 10ps 10ps 10ns 20ns
+vb B gnd pulse 1.8 0 0ns 10ps 10ps 20ns 40ns
+
+.subckt not_gate OUT A width vdd gnd
+  M1 OUT A vdd vdd CMOSP W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M2 OUT A gnd gnd CMOSN W={width} L={length} AS={5*width*LAMBDA} PS={10*LAMBDA+2*width} AD={5*width*LAMBDA} PD={10*LAMBDA+2*width}
+.ends not_gate
+
+
+.subckt xor_gate OUT A B width vdd gnd
+   
+  x1 A_inverted A width vdd gnd not_gate
+  x2 B_inverted B width vdd gnd not_gate
+ 
+  M1 l1 A vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M2 OUT B_inverted l1 vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M3 l2 A_inverted vdd vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M4 OUT B l2 vdd CMOSP W={4*width} L={length} AS={5*4*width*LAMBDA} PS={10*LAMBDA+2*4*width} AD={5*4*width*LAMBDA} PD={10*LAMBDA+2*4*width}
+  M5 OUT A l3 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M6 l3 B gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M7 OUT A_inverted l4 gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+  M8 l4 B_inverted gnd gnd CMOSN W={2*width} L={length} AS={5*2*width*LAMBDA} PS={10*LAMBDA+2*2*width} AD={5*2*width*LAMBDA} PD={10*LAMBDA+2*2*width}
+.ends xor_gate
+
+x1 OUT A B width vdd gnd xor_gate
+.tran 100p 40n
+
+.control
+set color0=black 
+set color1=white 
+
+run
+set curplottitle="Pragnya_2023102067"
+plot v(OUT) v(A)+4 v(B)+2
+.endc
